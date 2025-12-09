@@ -28,4 +28,5 @@ func Run() error {
 			return err
 		}
 	}
+	return nil
 }
