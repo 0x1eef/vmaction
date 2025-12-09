@@ -33,17 +33,11 @@ runs:
       with:
         go-version: '1.25'
 
-    - name: Build
+    - name: Build VM
       shell: bash
       run: |
         cd ${{ github.action_path }}
-        go build -o setup-action ./cmd/setup-action
-
-    - name: Setup
-      shell: bash
-      run: |
-        cd ${{ github.action_path }}
-        ./setup-action
+        go run ./...
 
       env:
         INPUT_RUN: ${{ inputs.run }}
