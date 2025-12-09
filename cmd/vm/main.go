@@ -4,11 +4,16 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/hardenedbsd/hardenedbsd-vm/internal/apt"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/curl"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/virt"
+
 )
 
 func main() {
+	if err := apt.Run(); err != nil {
+		abort("error: %s\n", err)
+	}
 	image, err := curl.Run()
 	if err != nil {
 		abort("error: %s\n", err)
