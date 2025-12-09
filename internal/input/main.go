@@ -9,8 +9,7 @@ var (
 	Arch       = get("INPUT_ARCH", "amd64")
 	Filesystem = get("INPUT_FILESYSTEM", "zfs")
 	Memory     = get("INPUT_MEMORY", "4G")
-	Run        = get("INPUT_RUN", "")
-	Cache      = get("INPUT_CACHE", "false")
+	Run        = get("INPUT_RUN", "uname -a")
 )
 
 func get(key, def string) string {

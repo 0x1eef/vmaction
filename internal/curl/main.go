@@ -4,18 +4,27 @@ import (
 	"os/exec"
 
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/cmd"
+	"github.com/hardenedbsd/hardenedbsd-vm/internal/input"
 )
 
-const (
-	target = "image.raw"
-	image  = "https://github.com/0x1eef/hardenedbsd-builder/actions/runs/20037038355/artifacts/4800738241"
+var (
+	Destination = "image.raw"
+	URLMap      = map[string]string{
+		"16-CURRENT": "FIXME",
+		"15-STABLE":  "https://github.com/0x1eef/hardenedbsd-builder/actions/runs/20037038355/artifacts/4800738241",
+		"14-STABLE":  "FIXME",
+	}
 )
 
 func Run() (string, error) {
-	args := []string{"-L", "-o", target, url()}
-	return target, cmd.Run(exec.Command("curl", args...))
+	args := []string{"-L", "-o", Destination, url()}
+	return Destination, cmd.Run(exec.Command("curl", args...))
 }
 
 func url() string {
-	return image
+	u, ok := URLMap[input.Release]
+	if !ok {
+		return ""
+	}
+	return u
 }

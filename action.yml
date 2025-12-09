@@ -15,15 +15,12 @@ inputs:
     default: 'zfs'
   run:
     description: 'The command to run in the HardenedBSD VM'
-    required: true
+    required: false
+    default: 'uname -a'
   memory:
     description: 'VM memory size (default: 4G)'
     required: false
     default: '4G'
-  cache:
-    description: 'Enable caching of VM image (default: true)'
-    required: false
-    default: 'true'
 
 branding:
   icon: 'activity'

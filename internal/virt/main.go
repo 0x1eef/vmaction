@@ -8,24 +8,24 @@ import (
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/cmd"
 )
 
-func Run() error {
+func Run(image string) error {
 	vm := "testvm"
-	if err := create(vm); err != nil {
+	if err := create(vm, image); err != nil {
 		return err
 	}
-	if err := wait(vm); err != nil {
+	if err := wait(); err != nil {
 		return err
 	}
 	return nil
 }
 
-func create(vm string) error {
+func create(vm, image string) error {
 	args := []string{
 		"--name", vm,
 		"--memory", "6144",
 		"--vcpus", "2",
 		"--arch", "x86_64",
-		"--disk", "image.raw,format=raw,bus=virtio",
+		"--disk", image + "format=raw,bus=virtio",
 		"--os-variant", "freebsd13.1",
 		"--graphics", "none",
 		"--network", "none",
@@ -37,7 +37,7 @@ func create(vm string) error {
 	return cmd.Run(exec.Command("virt-install", args...))
 }
 
-func wait(_ string) error {
+func wait() error {
 	maxAttempts := 100
 	attempts := 0
 	for {
