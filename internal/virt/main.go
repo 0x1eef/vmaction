@@ -25,7 +25,7 @@ func create(vm, image string) error {
 		"--memory", "6144",
 		"--vcpus", "2",
 		"--arch", "x86_64",
-		"--disk", image + "format=raw,bus=virtio",
+		"--disk", "path="+image + ",format=raw,bus=virtio",
 		"--os-variant", "freebsd13.1",
 		"--graphics", "none",
 		"--network", "none",
