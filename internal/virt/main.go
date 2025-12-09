@@ -27,7 +27,7 @@ func create(vm, image string) error {
 		"--arch", "x86_64",
 		"--disk", "path=" + image + ",format=raw,bus=virtio",
 		"--os-variant", "freebsd13.1",
-		"--network", "network=default,model=e1000",
+		"--network", "user,model=e1000",
 		"--graphics", "vnc,listen=0.0.0.0",
 		"--noautoconsole",
 		"--import",
