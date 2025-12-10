@@ -32,7 +32,7 @@ func create(vm, image string) error {
 		"--noautoconsole",
 		"--import",
 	}
-	return cmd.Run(exec.Command("virt-install", args...))
+	return cmd.Run(exec.Command("sudo", append([]string{"virt-install"}, args...)...))
 }
 
 func wait() error {
