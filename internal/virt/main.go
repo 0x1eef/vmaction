@@ -27,12 +27,10 @@ func create(vm, image string) error {
 		"--arch", "x86_64",
 		"--disk", "path=" + image + ",format=raw,bus=virtio",
 		"--os-variant", "freebsd13.1",
-		"--network", "network=default,model=virtio",
+		"--network", "network=default,model=e1000",
 		"--graphics", "vnc,listen=0.0.0.0",
 		"--noautoconsole",
 		"--import",
-		"--qemu-commandline=\"-netdev user,id=hostnet1,hostfwd=tcp::2222-:22 -device virtio-net-pci,netdev=hostnet1\"",
-
 	}
 	return cmd.Run(exec.Command("sudo", append([]string{"virt-install"}, args...)...))
 }
