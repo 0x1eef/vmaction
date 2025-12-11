@@ -3,7 +3,6 @@ package socat
 import (
 	"fmt"
 	"os/exec"
-	"strings"
 	//"github.com/hardenedbsd/hardenedbsd-vm/internal/cmd"
 )
 
