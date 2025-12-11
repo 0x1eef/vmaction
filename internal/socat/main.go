@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
-	
 	//"github.com/hardenedbsd/hardenedbsd-vm/internal/cmd"
 )
 
@@ -14,10 +13,9 @@ func Run() error {
 	if err != nil {
 		return err
 	}
-	dest := fmt.Sprintf("TCP:%s:22", strings.TrimSpace(string(cmd)))
-	err = exec.Command("socat", "TCP-LISTEN:2222,fork,reuseaddr" + dest).Start()
-	if err != nil {
-		return err
-	}
+	go func() {
+		dest := fmt.Sprintf("TCP:%s:22", string(cmd))
+		exec.Command("socat", "TCP-LISTEN:2222,fork,reuseaddr"+dest).Run()
+	}()
 	return nil
 }
