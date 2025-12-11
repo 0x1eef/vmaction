@@ -9,6 +9,7 @@ import (
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/ssh"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/vm"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/xz"
+	"github.com/hardenedbsd/hardenedbsd-vm/internal/input"
 )
 
 func main() {
@@ -34,8 +35,13 @@ func main() {
 	if session, err = ssh.Run(ip); err != nil {
 		abort("error: %s\n", err)
 	}
-	defer session.Close()
 	fmt.Println("SSH session established")
+	defer session.Close()
+	if out, err := session.CombinedOutput(input.Run); err != nil {
+		abort("error: %s\n", err)
+	} else {
+		fmt.Println(string(out))
+	}
 }
 
 func abort(s string, v ...any) {
