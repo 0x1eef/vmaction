@@ -13,6 +13,10 @@ func Run() error {
 	if err != nil {
 		return err
 	}
-	println(string(cmd))
+	dest := fmt.Sprintf("TCP:%s:22", strings.TrimSpace(string(cmd)))
+	err = exec.Command("socat", "TCP-LISTEN:2222,fork,reuseaddr" + dest).Start()
+	if err != nil {
+		return err
+	}
 	return nil
 }
