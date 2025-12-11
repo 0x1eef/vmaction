@@ -20,7 +20,7 @@ var (
 func Run(ip string) (*_ssh.Session, error) {
 	attempts := 0
 	for {
-		conn, err := _ssh.Dial("tcp", ip, &config)
+		conn, err := _ssh.Dial("tcp", fmt.Sprintf("%s:%s", ip, "22"), &config)
 		if err != nil {
 			attempts++
 			if attempts >= max {
