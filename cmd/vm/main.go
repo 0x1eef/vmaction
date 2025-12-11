@@ -16,6 +16,7 @@ func main() {
 		ip      string
 		archive string
 		image   string
+		session *ssh.Session
 		err     error
 	)
 	if err := apt.Run(); err != nil {
@@ -30,9 +31,11 @@ func main() {
 	if ip, err = vm.Run(image); err != nil {
 		abort("error: %s\n", err)
 	}
-	if err = ssh.Run(ip); err != nil {
+	if session, err = ssh.Run(ip); err != nil {
 		abort("error: %s\n", err)
 	}
+	defer session.Close()
+	fmt.Println("SSH session established")
 }
 
 func abort(s string, v ...any) {

@@ -1,33 +1,33 @@
 package ssh
 
 import (
-	"fmt"
-	"os/exec"
 	"time"
 
-	"github.com/hardenedbsd/hardenedbsd-vm/internal/cmd"
+	_ssh "golang.org/x/crypto/ssh"
 )
 
-func Run(ip string) error {
-	args := []string{
-		"-o", "StrictHostKeyChecking=no",
-		"-o", "UserKnownHostsFile=/dev/null",
-		fmt.Sprintf("root@%s", ip),
-		"true",
+type Session = _ssh.Session
+
+var (
+	max    = 100
+	config = _ssh.ClientConfig{
+		User: "root",
+		Auth: []_ssh.AuthMethod{_ssh.Password("")},
 	}
+)
+
+func Run(ip string) (*_ssh.Session, error) {
 	attempts := 0
-	max := 100
 	for {
-		if err := cmd.Run(exec.Command("ssh", args...)); err != nil {
+		conn, err := _ssh.Dial("tcp", ip, &config)
+		if err != nil {
 			attempts++
 			if attempts >= max {
-				return err
+				return nil, err
 			}
 			time.Sleep(1 * time.Second)
-			fmt.Println("")
 		} else {
-			break
+			return conn.NewSession()
 		}
 	}
-	return nil
 }
