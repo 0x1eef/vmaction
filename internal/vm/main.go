@@ -51,6 +51,7 @@ func waitForIP(vmName string, maxAttempts int) (string, error) {
 		if err == nil {
 			matches := re.FindSubmatch(bytes.TrimSpace(out))
 			if len(matches) == 2 {
+				fmt.Printf("The VM has an IP: %s\n", matches[1])
 				return string(matches[1]), nil
 			}
 		}
