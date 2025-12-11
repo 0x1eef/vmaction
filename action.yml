@@ -44,7 +44,7 @@ runs:
       shell: bash
       run: |
         cd ${{ github.action_path }}
-        go run ./...
+        sudo go run ./...
 
       env:
         INPUT_RUN: ${{ inputs.run }}
