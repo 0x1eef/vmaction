@@ -2,7 +2,6 @@ package socat
 
 import (
 	"fmt"
-	"github.com/hardenedbsd/hardenedbsd-vm/internal/cmd"
 	"os/exec"
 )
 
