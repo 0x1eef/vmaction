@@ -6,12 +6,13 @@ import (
 
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/apt"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/curl"
-	"github.com/hardenedbsd/hardenedbsd-vm/internal/virt"
+	"github.com/hardenedbsd/hardenedbsd-vm/internal/vm"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/xz"
 )
 
 func main() {
 	var (
+		ip      string
 		archive string
 		image   string
 		err     error
@@ -25,9 +26,10 @@ func main() {
 	if image, err = xz.Run(archive); err != nil {
 		abort("error: %s\n", err)
 	}
-	if err := virt.Run(image); err != nil {
+	if ip, err = vm.Run(image); err != nil {
 		abort("error: %s\n", err)
 	}
+	fmt.Println("VM IP Address:", ip)
 }
 
 func abort(s string, v ...any) {

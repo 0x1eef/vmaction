@@ -1,0 +1,57 @@
+package vm
+
+import (
+	"bytes"
+	"os/exec"
+	"regexp"
+	"time"
+
+	"github.com/hardenedbsd/hardenedbsd-vm/internal/cmd"
+)
+
+func Run(image string) (string, error) {
+	var (
+		vm  string = "testvm"
+		ip  string
+		err error
+	)
+	if err := create(vm, image); err != nil {
+		return "", err
+	}
+	if ip, err = waitForIP(vm, 100); err != nil {
+		return "", err
+	}
+	return ip, nil
+}
+
+func create(vm, image string) error {
+	args := []string{
+		"--name", vm,
+		"--memory", "6144",
+		"--vcpus", "2",
+		"--arch", "x86_64",
+		"--disk", "path=" + image + ",format=raw,bus=virtio",
+		"--os-variant", "freebsd13.1",
+		"--network", "network=default,model=e1000",
+		"--graphics", "vnc,listen=0.0.0.0",
+		"--noautoconsole",
+		"--import",
+	}
+	return cmd.Run(exec.Command("sudo", append([]string{"virt-install"}, args...)...))
+}
+
+func waitForIP(vmName string, maxAttempts int) (string, error) {
+	re := regexp.MustCompile(`ipv4\s+([0-9.]+)\/`)
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		cmd := exec.Command("sudo", "virsh", "domifaddr", vmName)
+		out, err := cmd.Output()
+		if err == nil {
+			matches := re.FindSubmatch(bytes.TrimSpace(out))
+			if len(matches) == 2 {
+				return string(matches[1]), nil
+			}
+		}
+		time.Sleep(1 * time.Second)
+	}
+	return "", exec.ErrNotFound
+}
