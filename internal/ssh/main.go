@@ -10,7 +10,7 @@ import (
 
 func Run(ip string) error {
 	args := []string{
-		"sshpass", "-p", "",
+		"-p", "",
 		"ssh",
 		"-o", "StrictHostKeyChecking=no",
 		"-o", "UserKnownHostsFile=/dev/null",
@@ -27,6 +27,7 @@ func Run(ip string) error {
 				return err
 			}
 			time.Sleep(1 * time.Second)
+			fmt.Println("")
 		} else {
 			break
 		}
