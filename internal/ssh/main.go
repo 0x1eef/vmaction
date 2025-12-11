@@ -1,6 +1,7 @@
 package ssh
 
 import (
+	"fmt"
 	"time"
 
 	_ssh "golang.org/x/crypto/ssh"
@@ -26,6 +27,7 @@ func Run(ip string) (*_ssh.Session, error) {
 				return nil, err
 			}
 			time.Sleep(1 * time.Second)
+			fmt.Printf("%v (%d/%d)\n", err, attempts, max)
 		} else {
 			return conn.NewSession()
 		}
