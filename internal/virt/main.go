@@ -53,7 +53,7 @@ func waitForSSH() error {
 		time.Sleep(2 * time.Second)
 		if out, err := exec.Command(
 			"sshpass", "-p", "",
-			"ssh", "-p", "2222", "root@localhost",
+			"ssh", "-p", "2222", "root@127.0.0.1",
 			"-o ConnectTimeout=2", "-o ConnectionAttempts=1",
 			"true",
 		).CombinedOutput(); err != nil {
