@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/cmd"
+	"github.com/hardenedbsd/hardenedbsd-vm/internal/socat"
 )
 
 func Run(image string) error {
@@ -13,7 +14,10 @@ func Run(image string) error {
 	if err := create(vm, image); err != nil {
 		return err
 	}
-	if err := wait(); err != nil {
+	if err := waitForIP(); err != nil {
+		return err
+	}
+	if err := waitForSSH(); err != nil {
 		return err
 	}
 	return nil
@@ -35,7 +39,14 @@ func create(vm, image string) error {
 	return cmd.Run(exec.Command("sudo", append([]string{"virt-install"}, args...)...))
 }
 
-func wait() error {
+func waitForIP() error {
+	if err := socat.Run(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func waitForSSH() error {
 	maxAttempts := 100
 	attempts := 0
 	for {
