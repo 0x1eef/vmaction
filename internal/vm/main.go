@@ -42,10 +42,9 @@ func create(vm, image string) error {
 }
 
 func waitForIP(vmName string, maxAttempts int) (string, error) {
-	fmt.Println("Wait for VM to be assigned an IP")
 	re := regexp.MustCompile(`ipv4\s+([0-9.]+)\/`)
 	for attempt := 1; attempt <= maxAttempts; attempt++ {
-		fmt.Printf("Attempt %d/%d\n", attempt, maxAttempts)
+		fmt.Printf("Discover IP. Attempt %d/%d:\n", attempt, maxAttempts)
 		cmd := exec.Command("sudo", "virsh", "domifaddr", vmName)
 		out, err := cmd.Output()
 		if err == nil {
@@ -54,7 +53,7 @@ func waitForIP(vmName string, maxAttempts int) (string, error) {
 				fmt.Printf("The VM has an IP: %s\n", matches[1])
 				return string(matches[1]), nil
 			} else {
-				fmt.Printf("No IP address found yet:\n%s\n", out)
+				fmt.Println("No IP found yet")
 			}
 		}
 		time.Sleep(2 * time.Second)
