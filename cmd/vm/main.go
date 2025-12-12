@@ -7,10 +7,10 @@ import (
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/apt"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/curl"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/input"
+	"github.com/hardenedbsd/hardenedbsd-vm/internal/script"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/ssh"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/vm"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/xz"
-	"github.com/hardenedbsd/hardenedbsd-vm/internal/script"
 )
 
 func main() {
@@ -25,16 +25,19 @@ func main() {
 		if err := apt.Run(); err != nil {
 			abort("error: %s\n", err)
 		}
+		fmt.Println("Tools installed")
 	})
 	group("Download VM", func() {
 		if archive, err = curl.Run(); err != nil {
 			abort("error: %s\n", err)
 		}
+		fmt.Println("VM downloaded:", archive)
 	})
 	group("Extract VM", func() {
 		if image, err = xz.Run(archive); err != nil {
 			abort("error: %s\n", err)
 		}
+		fmt.Println("VM extracted:", image)
 	})
 	group("Run VM", func() {
 		if ip, err = vm.Run(image); err != nil {
