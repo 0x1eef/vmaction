@@ -13,8 +13,8 @@ import (
 var (
 	Destination = "hardenedbsd-vm.raw.xz"
 	URLMap      = map[string]string{
-		"16-CURRENT": "FIXME",
-		"15-STABLE":  "https://github.com/0x1eef/hardenedbsd-builder/releases/download/hardenedbsd-15-latest/hardenedbsd-15.0-ufs-amd64.raw.xz",
+		"16-CURRENT": "https://github.com/0x1eef/hardenedbsd-builder/releases/download/hardenedbsd-16-latest/hardenedbsd-16.0-ufs-amd64.raw.xz",
+		"15-STABLE":  "FIXME",
 		"14-STABLE":  "FIXME",
 	}
 )
