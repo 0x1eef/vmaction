@@ -10,6 +10,7 @@ import (
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/ssh"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/vm"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/xz"
+	"github.com/hardenedbsd/hardenedbsd-vm/internal/script"
 )
 
 func main() {
@@ -44,9 +45,15 @@ func main() {
 		}
 		fmt.Println("SSH session established")
 	})
-	group("Run input script", func() {
+	group("Save payload", func() {
+		if _, err = script.Save(input.Run); err != nil {
+			abort("error: %s\n", err)
+		}
+		fmt.Println("User input saved as script.sh")
+	})
+	group("Run payload", func() {
 		defer session.Close()
-		if out, err := session.CombinedOutput(input.Run); err != nil {
+		if out, err := session.CombinedOutput("/bin/sh script.sh"); err != nil {
 			abort("error: %s\n", err)
 		} else {
 			fmt.Println(string(out))
