@@ -5,22 +5,10 @@ inputs:
     description: 'The HardenedBSD release'
     required: false
     default: '15-STABLE'
-  arch:
-    description: 'CPU architecture'
-    required: false
-    default: 'amd64'
-  filesystem:
-    description: 'Filesystem'
-    required: false
-    default: 'zfs'
   run:
     description: 'The command to run in the HardenedBSD VM'
     required: false
     default: 'uname -a'
-  memory:
-    description: 'VM memory size (default: 4G)'
-    required: false
-    default: '4G'
 
 branding:
   icon: 'activity'
