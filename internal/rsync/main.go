@@ -10,14 +10,18 @@ import (
 
 func CopyToVM(ip string) error {
 	var (
-		wrkdir string
-		err    error
+		fromdir string
+		todir   string
+		err     error
+		ok      bool
 	)
-	if wrkdir, err = os.Getwd(); err != nil {
+	if fromdir, err = os.Getwd(); err != nil {
 		return err
 	}
-	src := wrkdir
-	dest := fmt.Sprintf("runner@%s:~/", ip)
-	args := []string{"-rvah", "-e", "ssh -o StrictHostKeyChecking=no", src, dest}
+	if todir, ok = os.LookupEnv("GITHUB_WORKSPACE"); !ok {
+		return fmt.Errorf("GITHUB_WORKSPACE not set\nEnvironment: %v", os.Environ())
+	}
+	dest := fmt.Sprintf("runner@%s:%s/", ip, todir)
+	args := []string{"-rvah", "-e", "ssh -o StrictHostKeyChecking=no", fromdir, dest}
 	return cmd.Run(exec.Command("rsync", args...))
 }
