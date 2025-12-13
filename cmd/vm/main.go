@@ -75,8 +75,8 @@ func main() {
 		if wrkdir, ok := os.LookupEnv("GITHUB_WORKSPACE"); !ok {
 			abort("GITHUB_WORKSPACE not set\nEnvironment: %v", os.Environ())
 		} else {
-			userScript := path.Join(wrkdir, "script.sh")
-			if out, err := session.CombinedOutput(userScript); err != nil {
+			shell := fmt.Sprintf("/bin/sh %s", path.Join(wrkdir, "script.sh"))
+			if out, err := session.CombinedOutput(shell); err != nil {
 				abort("error: %s\n", err)
 			} else {
 				fmt.Println(string(out))
