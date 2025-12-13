@@ -57,6 +57,7 @@ func waitForIP(vmName string, maxAttempts int) (string, error) {
 			}
 		}
 		time.Sleep(2 * time.Second)
+		fmt.Println()
 	}
 	return "", exec.ErrNotFound
 }
