@@ -11,37 +11,37 @@ import (
 )
 
 var (
-	Destination = "hardenedbsd-vm.raw.xz"
-	URLMap      = map[string]string{
-		"16-CURRENT": "https://github.com/0x1eef/hardenedbsd-builder/releases/download/hardenedbsd-16-latest/hardenedbsd-16.0-ufs-amd64.raw.xz",
-		"15-STABLE":  "FIXME",
-		"14-STABLE":  "FIXME",
+	dest = "hardenedbsd-vm.raw.xz"
+	base = "https://github.com/0x1eef/hardenedbsd-builder/releases/download/"
+	urls = map[string]string{
+		"16-CURRENT": fmt.Sprintf("%s/16CURRENT_UFS_AMD64_MODIFIED/hardenedbsd-vm.raw.xz", base),
+		"15-STABLE":  fmt.Sprintf("%s/15STABLE_UFS_AMD64_MODIFIED/hardenedbsd-vm.raw.xz", base),
 	}
 )
 
 func Source() (string, error) {
-	url, ok := URLMap[input.Release]
-	if !ok {
+	if url, ok := urls[input.Release]; !ok {
 		return "", fmt.Errorf("unknown release: %s", input.Release)
+	} else {
+		return url, nil
 	}
-	return url, nil
 }
 
 func Run() (string, error) {
 	var (
-		destNoSuffix string   = strings.TrimSuffix(Destination, ".xz")
-		targets      []string = []string{Destination, destNoSuffix}
+		destNoSuffix string   = strings.TrimSuffix(dest, ".xz")
+		targets      []string = []string{dest, destNoSuffix}
 		url          string
 		err          error
 	)
+	for _, target := range targets {
+		if _, err = os.Stat(target); err == nil {
+			return dest, nil
+		}
+	}
 	if url, err = Source(); err != nil {
 		return "", err
 	}
-	for _, target := range targets {
-		if _, err = os.Stat(target); err == nil {
-			return Destination, nil
-		}
-	}
-	args := []string{"-L", "-o", Destination, url}
-	return Destination, cmd.Run(exec.Command("curl", args...))
+	args := []string{"-L", "-o", dest, url}
+	return dest, cmd.Run(exec.Command("curl", args...))
 }
