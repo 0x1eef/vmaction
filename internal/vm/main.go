@@ -44,7 +44,7 @@ func create(vm, image string) error {
 func waitForIP(vmName string, maxAttempts int) (string, error) {
 	re := regexp.MustCompile(`ipv4\s+([0-9.]+)\/`)
 	for attempt := 1; attempt <= maxAttempts; attempt++ {
-		fmt.Printf("Discover IP (attempt %d/%d)\n", attempt, maxAttempts)
+		fmt.Printf("Discover VM (attempt %d/%d)\n", attempt, maxAttempts)
 		cmd := exec.Command("sudo", "virsh", "domifaddr", vmName)
 		out, err := cmd.Output()
 		if err == nil {
@@ -53,7 +53,7 @@ func waitForIP(vmName string, maxAttempts int) (string, error) {
 				fmt.Printf("The VM has an IP (%s)\n", matches[1])
 				return string(matches[1]), nil
 			} else {
-				fmt.Printf("\n%s\n", out)
+				fmt.Printf("The VM doesn't have an IP yet\n")
 			}
 		}
 		time.Sleep(2 * time.Second)
