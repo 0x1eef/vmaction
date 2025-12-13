@@ -18,6 +18,6 @@ func CopyToVM(ip string) error {
 	}
 	src := wrkdir
 	dest := fmt.Sprintf("runner@%s:~/", ip)
-	args := []string{"-rvah", src, dest}
+	args := []string{"-rvah", "-e", "ssh -o StrictHostKeyChecking=no", src, dest}
 	return cmd.Run(exec.Command("rsync", args...))
 }
