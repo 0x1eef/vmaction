@@ -22,6 +22,6 @@ func CopyToVM(ip string) error {
 		return fmt.Errorf("GITHUB_WORKSPACE not set\nEnvironment: %v", os.Environ())
 	}
 	dest := fmt.Sprintf("runner@%s:%s/", ip, todir)
-	args := []string{"-rvah", "-e", "ssh -o StrictHostKeyChecking=no", fromdir, dest}
+	args := []string{"-rvah", "--mkpath", "-e", "ssh -o StrictHostKeyChecking=no", fromdir, dest}
 	return cmd.Run(exec.Command("rsync", args...))
 }
