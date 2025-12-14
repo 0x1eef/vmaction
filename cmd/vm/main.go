@@ -10,7 +10,6 @@ import (
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/input"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/keys"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/rsync"
-	"github.com/hardenedbsd/hardenedbsd-vm/internal/script"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/ssh"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/vm"
 	"github.com/hardenedbsd/hardenedbsd-vm/internal/xz"
@@ -52,17 +51,20 @@ func main() {
 		if ip, err = vm.Run(image); err != nil {
 			abort("error: %s\n", err)
 		}
-		fmt.Println("Please wait...")
+		fmt.Printf("\nPlease wait for SSH...\n")
 		if session, err = ssh.Run(ip); err != nil {
 			abort("error: %s\n", err)
 		}
 		fmt.Println("SSH session established")
 	})
 	group("Save payload", func() {
-		if _, err = script.Save(input.Run); err != nil {
+		payload := fmt.Sprintf("#!bin/sh\nset -x\n%s\n", input.Run)
+		err = os.WriteFile("script.sh", []byte(payload), 0644)
+		if err != nil {
 			abort("error: %s\n", err)
+		} else {
+			fmt.Println("User input saved as script.sh")
 		}
-		fmt.Println("User input saved as script.sh")
 	})
 	group("Copy payload to VM", func() {
 		if err := rsync.CopyToVM(ip); err != nil {
