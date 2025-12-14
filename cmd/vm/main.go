@@ -23,6 +23,11 @@ func main() {
 		session *ssh.Session
 		err     error
 	)
+	group("Environment", func() {
+		for _, env := range os.Environ() {
+			fmt.Println(env)
+		}
+	})
 	group("Install tools", func() {
 		if err := apt.Run(); err != nil {
 			abort("error: %s\n", err)
