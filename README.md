@@ -38,9 +38,9 @@ jobs:
     - name: Run test
       uses: 0x1eef/hardenedbsd-vm@v1
       with:
-        release: '15-STABLE'
+        release: '16-CURRENT'
         run: |
-          pkg-static install -y go
+          mdo -u root pkg-static install -y go
           make test
 ```
 

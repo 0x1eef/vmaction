@@ -1,8 +1,8 @@
-name: 'HardenedBSD CI'
-description: 'Run CI commands in a HardenedBSD virtual machine'
+name: 'hardenedBSD CI'
+description: 'Run CI commands in a hardenedBSD virtual machine'
 inputs:
   release:
-    description: 'The HardenedBSD release'
+    description: 'The hardenedBSD release'
     required: false
     default: '15-STABLE'
   arch:
@@ -14,7 +14,7 @@ inputs:
     required: false
     default: 'ufs'
   run:
-    description: 'The command to run in the HardenedBSD VM'
+    description: 'The command to run in the hardenedBSD VM'
     required: false
     default: 'uname -a'
 
