@@ -84,7 +84,7 @@ func main() {
 		shell := fmt.Sprintf("/bin/sh %s", path.Join(wrkdir, "script.sh"))
 		fmt.Printf("Payload: %s\n", shell)
 		if out, err := session.CombinedOutput(shell); err != nil {
-			abort("error: %s\n", err)
+			abort("error: \n%s%s\n\n", string(out), err)
 		} else {
 			fmt.Println(string(out))
 		}
