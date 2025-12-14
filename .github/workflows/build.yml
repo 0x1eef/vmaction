@@ -18,5 +18,6 @@ jobs:
     - name: Run test
       uses: ./
       with:
+        release: '15-STABLE'
         run: |
           uname -a
