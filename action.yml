@@ -44,5 +44,6 @@ runs:
 
       env:
         INPUT_RUN: ${{ inputs.run }}
-        INPUT_MEMORY: ${{ inputs.memory }}
-        INPUT_CACHE: ${{ inputs.cache }}
+        INPUT_RELEASE: ${{ inputs.release }}
+        INPUT_ARCH: ${{ inputs.arch }}
+        INPUT_FILESYSTEM: ${{ inputs.filesystem }}
