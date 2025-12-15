@@ -17,18 +17,18 @@ import (
 
 func main() {
 	var (
-		ip      string
-		archive string
-		image   string
-		dir     string
-		ok      bool
-		session *ssh.Session
-		err     error
+		ip, archive, image, dir, script string
+		payload                         []byte
+		ok                              bool
+		session                         *ssh.Session
+		err                             error
 	)
 	group("Environment", func() {
 		if dir, ok = os.LookupEnv("GITHUB_WORKSPACE"); !ok {
 			abort("GITHUB_WORKSPACE not set\nEnvironment: %v", os.Environ())
 		}
+		script = path.Join(dir, "hardenedbsd-vm.sh")
+		payload = fmt.Appendf(payload, "#!/bin/sh\nset -ex\ncd %s\n%s\n", dir, input.Run)
 	})
 	group("Install tools", func() {
 		if err := apt.Run(); err != nil {
@@ -65,12 +65,11 @@ func main() {
 		fmt.Println("SSH session established")
 	})
 	group("Save payload", func() {
-		payload := fmt.Sprintf("#!/bin/sh\nset -ex\ncd %s\n%s\n", dir, input.Run)
-		err = os.WriteFile(path.Join(dir, "script.sh"), []byte(payload), 0755)
+		err = os.WriteFile(script, payload, 0755)
 		if err != nil {
 			abort("error: %s\n", err)
 		} else {
-			fmt.Println("User input saved as script.sh")
+			fmt.Printf("User input saved as %s\n", path.Base(script))
 		}
 	})
 	group("Copy payload to VM", func() {
@@ -81,7 +80,6 @@ func main() {
 	})
 	group("Run payload", func() {
 		defer session.Close()
-		script := path.Join(dir, "script.sh")
 		fmt.Printf("Payload: %s\n", script)
 		if out, err := session.CombinedOutput(script); err != nil {
 			abort("error: \n%s%s\n\n", string(out), err)
