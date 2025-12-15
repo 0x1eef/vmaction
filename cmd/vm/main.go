@@ -23,12 +23,17 @@ func main() {
 		session                         *ssh.Session
 		err                             error
 	)
-	group("Environment", func() {
+	group("Save hardenedbsd-vm.sh", func() {
 		if dir, ok = os.LookupEnv("GITHUB_WORKSPACE"); !ok {
 			abort("GITHUB_WORKSPACE not set\nEnvironment: %v", os.Environ())
 		}
 		script = path.Join(dir, "hardenedbsd-vm.sh")
 		payload = fmt.Appendf(payload, "#!/bin/sh\nset -ex\ncd %s\n%s\n", dir, input.Run)
+		if err = os.WriteFile(script, payload, 0755); err != nil {
+			abort("error: %s\n", err)
+		} else {
+			fmt.Printf("OK: %s", path.Base(script))
+		}
 	})
 	group("Install tools", func() {
 		if err := apt.Run(); err != nil {
@@ -48,39 +53,32 @@ func main() {
 		}
 		fmt.Println("VM extracted:", image)
 	})
+	group("Boot VM", func() {
+		if ip, err = vm.Run(image); err != nil {
+			abort("error: %s\n", err)
+		}
+	})
 	group("Install SSH keys", func() {
 		if err := keys.Install(); err != nil {
 			abort("error: %s\n", err)
 		}
 		fmt.Println("SSH keys installed")
 	})
-	group("Run VM", func() {
-		if ip, err = vm.Run(image); err != nil {
-			abort("error: %s\n", err)
-		}
-		fmt.Printf("\nPlease wait for SSH...\n")
+	group("Establish SSH session", func() {
 		if session, err = ssh.Run(ip); err != nil {
 			abort("error: %s\n", err)
 		}
 		fmt.Println("SSH session established")
 	})
-	group("Save payload", func() {
-		err = os.WriteFile(script, payload, 0755)
-		if err != nil {
-			abort("error: %s\n", err)
-		} else {
-			fmt.Printf("User input saved as %s\n", path.Base(script))
-		}
-	})
-	group("Copy payload to VM", func() {
+	group("Run rsync", func() {
 		if err := rsync.CopyToVM(ip, dir); err != nil {
 			abort("error: %s\n", err)
 		}
-		fmt.Println("Payload copied to VM")
+		fmt.Println("Files copied to VM")
 	})
 	group("Run payload", func() {
 		defer session.Close()
-		fmt.Printf("Payload: %s\n", script)
+		fmt.Printf("payload: %s\n", script)
 		if out, err := session.CombinedOutput(script); err != nil {
 			abort("error: \n%s%s\n\n", string(out), err)
 		} else {
