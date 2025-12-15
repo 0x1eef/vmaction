@@ -20,13 +20,13 @@ func main() {
 		ip      string
 		archive string
 		image   string
-		wrkdir  string
+		dir     string
 		ok      bool
 		session *ssh.Session
 		err     error
 	)
 	group("Environment", func() {
-		if wrkdir, ok = os.LookupEnv("GITHUB_WORKSPACE"); !ok {
+		if dir, ok = os.LookupEnv("GITHUB_WORKSPACE"); !ok {
 			abort("GITHUB_WORKSPACE not set\nEnvironment: %v", os.Environ())
 		}
 	})
@@ -65,8 +65,8 @@ func main() {
 		fmt.Println("SSH session established")
 	})
 	group("Save payload", func() {
-		payload := fmt.Sprintf("#!/bin/sh\nset -ex\ncd %s\n%s\n", wrkdir, input.Run)
-		err = os.WriteFile(path.Join(wrkdir, "script.sh"), []byte(payload), 0755)
+		payload := fmt.Sprintf("#!/bin/sh\nset -ex\ncd %s\n%s\n", dir, input.Run)
+		err = os.WriteFile(path.Join(dir, "script.sh"), []byte(payload), 0755)
 		if err != nil {
 			abort("error: %s\n", err)
 		} else {
@@ -74,14 +74,14 @@ func main() {
 		}
 	})
 	group("Copy payload to VM", func() {
-		if err := rsync.CopyToVM(ip); err != nil {
+		if err := rsync.CopyToVM(ip, dir); err != nil {
 			abort("error: %s\n", err)
 		}
 		fmt.Println("Payload copied to VM")
 	})
 	group("Run payload", func() {
 		defer session.Close()
-		script := path.Join(wrkdir, "script.sh")
+		script := path.Join(dir, "script.sh")
 		fmt.Printf("Payload: %s\n", script)
 		if out, err := session.CombinedOutput(script); err != nil {
 			abort("error: \n%s%s\n\n", string(out), err)
