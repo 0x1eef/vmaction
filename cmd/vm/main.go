@@ -23,7 +23,7 @@ func main() {
 		session                         *ssh.Session
 		err                             error
 	)
-	step("Save hardenedbsd-vm.sh", func() {
+	step("Save payload", func() {
 		if dir, ok = os.LookupEnv("GITHUB_WORKSPACE"); !ok {
 			abort("GITHUB_WORKSPACE not set\nEnvironment: %v", os.Environ())
 		}
